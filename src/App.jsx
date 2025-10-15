@@ -213,21 +213,22 @@ Respond with ONLY valid JSON (no markdown, no backticks):
   "day10": {...}
 }`;
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/.netlify/functions/generate-meals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2000,
-          messages: [{ role: "user", content: prompt }]
+          targetCalories: targetCalories,
+          detoxInfo: detoxInfo
         })
       });
 
       const data = await response.json();
-      let responseText = data.content[0].text;
-      responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      
-      const mealsData = JSON.parse(responseText);
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const mealsData = data.meals;
       
       // Apply detox plans
       Object.entries(detoxDays).forEach(([day, planId]) => {
