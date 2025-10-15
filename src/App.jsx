@@ -637,21 +637,21 @@ Respond with ONLY valid JSON (no markdown, no backticks):
   }
 ]`;
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/.netlify/functions/interpret-meals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
+        body: JSON.stringify({ input: input })
       });
 
       const data = await response.json();
-      let responseText = data.content[0].text;
-      responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      
-      const interpreted = JSON.parse(responseText);
+
+      if (data.error) {
+        setAiInterpretedMeals([{type: 'error', message: data.error}]);
+        setShowAIPreview(true);
+        return;
+      }
+
+      const interpreted = data.interpreted;
       setAiInterpretedMeals(interpreted);
       setShowAIPreview(true);
     } catch (error) {
