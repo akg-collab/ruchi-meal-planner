@@ -1,4 +1,4 @@
-// src/components/ClientList.jsx
+// src/components/ClientList.jsx - Updated with new prop names
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { Search, Plus, User, Calendar, Target, Phone } from 'lucide-react';
@@ -52,7 +52,8 @@ const styles = {
   }
 };
 
-const ClientList = ({ onSelectClient, onCreateNew }) => {
+// UPDATED: Changed prop names to match App.jsx
+const ClientList = ({ onViewClient, onAddNew }) => {
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -174,13 +175,14 @@ const ClientList = ({ onSelectClient, onCreateNew }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '800', background: `linear-gradient(135deg, ${theme.colors.primary} 0%, #a78bfa 50%, #ec4899 100%)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                ruchi●
+                ruchi◉
               </h1>
               <p style={{ margin: 0, color: theme.colors.textSecondary, fontSize: '14px' }}>
                 Client Management • {clients.length} Total Client{clients.length !== 1 ? 's' : ''}
               </p>
             </div>
-            <button onClick={onCreateNew} style={{ ...styles.button, background: theme.colors.primary }}>
+            {/* UPDATED: Changed onCreateNew to onAddNew */}
+            <button onClick={onAddNew} style={{ ...styles.button, background: theme.colors.primary }}>
               <Plus size={20} />
               New Client
             </button>
@@ -233,8 +235,9 @@ const ClientList = ({ onSelectClient, onCreateNew }) => {
             <p style={{ color: theme.colors.textSecondary, marginBottom: '24px' }}>
               {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Create your first client to get started'}
             </p>
+            {/* UPDATED: Changed onCreateNew to onAddNew */}
             {!searchTerm && statusFilter === 'all' && (
-              <button onClick={onCreateNew} style={styles.button}>
+              <button onClick={onAddNew} style={styles.button}>
                 <Plus size={20} />
                 Create First Client
               </button>
@@ -245,7 +248,7 @@ const ClientList = ({ onSelectClient, onCreateNew }) => {
             {filteredClients.map((client) => (
               <div
                 key={client.id}
-                onClick={() => onSelectClient(client)}
+                onClick={() => onViewClient(client)}
                 style={{
                   ...styles.card,
                   cursor: 'pointer',
